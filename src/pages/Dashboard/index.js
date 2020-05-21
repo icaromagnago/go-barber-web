@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { useTransition, useSpring, config } from 'react-spring';
 import {
   format,
   subDays,
@@ -23,6 +25,15 @@ const range = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 export default function Dashboard() {
   const [schedule, setSchedule] = useState([]);
   const [date, setDate] = useState(new Date());
+  const [active, setActive] = useState(false);
+
+  const fade = useSpring({ from: { opacity: 0 }, to: { opacity: 1 } });
+
+  const transition = useTransition(date, null, {
+    from: { opacity: 0, transform: 'translate3d(-300px, 0, 0)' },
+    enter: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+    leave: { opacity: 1 },
+  });
 
   const dateFormatted = useMemo(
     () => format(date, "d 'de' MMMM", { locale: pt }),
@@ -78,17 +89,30 @@ export default function Dashboard() {
           <MdChevronRight size={36} color="#FFF" />
         </button>
       </header>
-
-      <ul>
-        {schedule.map((time) => (
-          <Time key={time.time} past={time.past} available={!time.appointment}>
-            <strong>{time.time}</strong>
-            <span>
-              {time.appointment ? time.appointment.user.name : 'Em aberto'}
-            </span>
-          </Time>
-        ))}
-      </ul>
+      <TransitionGroup className="card-container">
+        <CSSTransition
+          key={dateFormatted}
+          in
+          appear
+          timeout={5000}
+          classNames="slide"
+        >
+          <ul>
+            {schedule.map((time) => (
+              <Time
+                key={time.time}
+                past={time.past}
+                available={!time.appointment}
+              >
+                <strong>{time.time}</strong>
+                <span>
+                  {time.appointment ? time.appointment.user.name : 'Em aberto'}
+                </span>
+              </Time>
+            ))}
+          </ul>
+        </CSSTransition>
+      </TransitionGroup>
     </Container>
   );
 }
