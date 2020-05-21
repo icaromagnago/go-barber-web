@@ -1,15 +1,26 @@
 import styled, { keyframes } from 'styled-components';
 
-const slideOutLeft = keyframes`
+const slideIn = keyframes`
   from {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
+    transform: translateX(-50%);
+    opacity: 0;
   }
 
   to {
-    visibility: hidden;
-    -webkit-transform: translate3d(-100%, 0, 0);
-    transform: translate3d(-100%, 0, 0);
+    transform: translateX(0%);
+    opacity: 1;
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(50%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 `;
 
@@ -44,39 +55,26 @@ export const Container = styled.div`
     margin-top: 30px;
 
     /* appear - on page load */
-    &.slide-appear {
-      opacity: 0;
-      z-index: 1;
-    }
-    &.slide-appear.slide-appear-active {
-      opacity: 1;
-      transition: opacity 1000ms linear;
+    &.slide-left-appear {
+      animation: ${slideIn} 500ms ease-in forwards;
     }
 
-    &.slide-enter {
-      opacity: 0;
-      transform: translateX(-300px);
-      z-index: 1;
-    }
-    &.slide-enter.slide-enter-active {
-      opacity: 1;
-      transform: translateX(0);
-      transition: opacity 3000ms linear 1000ms,
-        transform 3000ms ease-in-out 1000ms;
+    &.slide-left-enter {
+      animation: ${slideIn} 500ms ease-in forwards;
     }
 
     /* slide exit */
-    &.slide-exit {
-      opacity: 1;
-      transform: translateX(0);
+    &.slide-left-exit {
+      display: none;
     }
-    &.slide-exit.slide-exit-active {
-      opacity: 0;
-      transform: translateX(300px);
-      transition: opacity 1500ms linear, transform 1500ms ease-out;
+
+    &.slide-right-enter {
+      animation: ${slideOut} 500ms ease-in forwards;
+      overflow-x: hidden;
     }
-    &.slide-exit-done {
-      opacity: 0;
+
+    &.slide-right-exit {
+      display: none;
     }
   }
 `;
